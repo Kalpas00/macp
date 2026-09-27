@@ -7,3 +7,6 @@ __pycache__/
 .env
 AGENT.md
 %SystemDrive%/
+# IDE 配置不入库：`.iml` 里是本机绝对路径，公开仓库里既无用又暴露环境信息。
+.idea/
+.vscode/
