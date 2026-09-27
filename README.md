@@ -2,6 +2,25 @@
 
 基于 LangGraph 与 Dapr 的 AI Native 多智能体协作平台，实现 Agent 间任务分配、协作执行与持久化编排，支持多模型接入（OpenAI/Claude/Ollama）、MCP 工具集成和全链路可观测。
 
+## 关于本仓库
+
+本项目源自**四人课程小组项目**（2 周 / 10 个工作日交付）。我在其中担任
+**成员 C（算法 / 模型与工具工程师）**，主责以下模块：
+
+| 目录 | 负责内容 |
+| --- | --- |
+| `app/tools` | 四个内置工具：计算器（AST 白名单求值，非 `eval`）、网页搜索、沙箱代码执行、只读 SQL |
+| `app/sandbox` | 代码执行的隔离边界——语言层策略校验 + Docker 后端（`cap_drop=ALL`、`no-new-privileges`、只读根 + tmpfs、禁网、cgroup 限额、超时即杀，且**不降级**为宿主进程） |
+| `app/mcp` | MCP Server 的注册、发现与调用，覆盖 inprocess / stdio / http 三种传输 |
+| `app/memory` | Redis 会话记忆与长期记忆 |
+| `app/observability` | OpenTelemetry 追踪、Prometheus 指标、模型回调与 Token 归因 |
+
+配套交付还有 `scripts/` 下的 MCP 通路端到端验证、性能并发测量与故障恢复测量脚本，
+以及对应的单元 / 集成 / 端到端测试网。
+
+原团队分工见 [分工.md](分工.md)。**本仓库是个人独立维护并继续迭代的版本**：
+2026-09-27 从团队仓库抽离，保留完整提交历史，此后的改动均在此基础上进行。
+
 ## 当前状态
 
 - D1-D2（M1）：LangGraph 单 Agent 原型、基础图结构与测试完成；编排框架固定为 LangGraph，
