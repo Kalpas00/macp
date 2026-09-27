@@ -858,6 +858,39 @@ def test_patch_mcp_server(api):
     assert kwargs["url"] is UNSET
 
 
+def test_patch_mcp_server_updates_tool_options(api):
+    """单个工具停用走的就是这条路径（前端 McpPanel 的每工具开关）。"""
+
+    registry, client = api
+
+    response = client.patch(
+        "/api/v1/config/mcp/servers/filesystem",
+        json={"tool_options": {"ask_wiki_question": {"disabled": True}}},
+    )
+
+    assert response.status_code == 200
+    _, kwargs = registry["update_server"].last_call
+    assert kwargs["tool_options"] == {"ask_wiki_question": {"disabled": True}}
+
+
+def test_patch_mcp_server_drops_unset_tool_option_keys(api):
+    """同 create：`{allowAutoExecution: null}` 是「没填」，不能落库成 `None`。"""
+
+    registry, client = api
+
+    client.patch(
+        "/api/v1/config/mcp/servers/filesystem",
+        json={
+            "tool_options": {
+                "ask_wiki_question": {"disabled": True, "allowAutoExecution": None}
+            }
+        },
+    )
+
+    _, kwargs = registry["update_server"].last_call
+    assert kwargs["tool_options"] == {"ask_wiki_question": {"disabled": True}}
+
+
 def test_delete_mcp_server_returns_204(api):
     registry, client = api
 

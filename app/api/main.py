@@ -2470,7 +2470,11 @@ def patch_mcp_server_registry(
     tool_options = _patch_field(payload, "tool_options")
     if tool_options is not None and tool_options is not UNSET:
         tool_options = {
-            name: {key: value for key, value in options.items() if value is not None}
+            name: {
+                key: value
+                for key, value in options.model_dump().items()
+                if value is not None
+            }
             for name, options in tool_options.items()
         }
     data = _registry_call(
